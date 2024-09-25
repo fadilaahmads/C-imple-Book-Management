@@ -181,7 +181,44 @@ void updateBook(char *filename){
 }
 
 void deleteBook(char *filename){
-  printf("Function not Ready\n");
+  struct BooksStruct book;
+  FILE *file = fopen(filename, "rb+");
+  int bookId;
+  int answer;
+  int bookFound = 0;
+  printf("[-] Deleting Book: . . . \n");
+  printf("Enter Book ID: ");
+  scanf("%d",&bookId);
+  getchar();
+
+  while(fread(&book, sizeof(book), 1, file)){
+    if(book.id == bookId){
+      printf("[*] Book Found!\n");
+      printf("ID: %d\n", book.id);
+      printf("Title: %s\n", book.title);
+      printf("Author: %s\n", book.author);
+      printf("ISBN: %s\n", book.isbnNumber);
+      printf("Available: %s\n", book.availability ? "Yes" : "No");
+      bookFound = 1;
+      printf("[?] Are you sure to delete this book? (1: yes or 2: no): "); 
+      scanf("%d", &answer);
+      getchar();
+
+      if(answer){
+        fseek(file, -sizeof(book), SEEK_CUR);
+        fwrite(&book, sizeof(book), 1, file);
+        printf("[*] Book successfully deleted!\n");
+        break;
+      } else {
+        printf("Book Deletion Has Been Canceled!\n");
+        break;
+      }
+    }
+  }
+  if(!bookFound){
+    printf("[x] Book not found!\n");
+  }
+  fclose(file);
 }
 
 int main(){
