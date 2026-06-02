@@ -1,19 +1,16 @@
-# Define the compiler and the flags
 CC = gcc
-CFLAGS = -Wall
-
-# Target to be created
+CFLAGS = -Wall -Iinclude
+SRC = main.c src/book.c src/ui.c
+OBJ = $(SRC:.c=.o)
 TARGET = bms
 
-# Rule to build the target
-$(TARGET): main.o
-	$(CC) -o $(TARGET) main.o
+$(TARGET): $(OBJ)
+	$(CC) -o $(TARGET) $(OBJ)
 
-# Rule to build the object file
-main.o: main.c
-	$(CC) $(CFLAGS) -c main.c
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-# Rule to clean up generated files
 clean:
-	rm -f $(TARGET) main.o
+	rm -f $(TARGET) $(OBJ) src/*.o
 
+.PHONY: clean
